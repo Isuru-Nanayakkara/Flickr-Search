@@ -8,11 +8,10 @@
 import UIKit
 
 class PhotoCell: UICollectionViewCell {
-    lazy private var imageView: UIImageView = {
-        let imageView = UIImageView()
+    lazy private var imageView: AsyncImageView = {
+        let imageView = AsyncImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
-        imageView.image = UIImage(named: "placeholder")
         return imageView
     }()
     
@@ -47,5 +46,15 @@ class PhotoCell: UICollectionViewCell {
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
+    }
+}
+
+extension PhotoCell {
+    func set(_ photo: Photo) {
+        let photoURL = FlickrPhotoURLBuilder(farm: photo.farm, server: photo.server, id: photo.id, secret: photo.secret)
+            .size(.thumbnail)
+            .build()
+        
+        imageView.loadImage(from: photoURL, placeholder: UIImage(named: "placeholder"))
     }
 }

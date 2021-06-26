@@ -29,13 +29,14 @@ class SearchViewController: UIViewController {
         return collectionView
     }()
     
-    private var viewModel: SearchViewModel!
+    private var presenter: SearchPresenter!
+    private var pendingWorkItem: DispatchWorkItem?
     
     
-    init(viewModel: SearchViewModel) {
+    init(presenter: SearchPresenter) {
         super.init(nibName: nil, bundle: nil)
         
-        self.viewModel = viewModel
+        self.presenter = presenter
     }
     
     required init?(coder: NSCoder) {
@@ -45,6 +46,8 @@ class SearchViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        presenter.setDelegate(self)
         
         // UI Setup
         setupView()
@@ -73,16 +76,24 @@ class SearchViewController: UIViewController {
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
     }
+    
+    // MARK: - API
+    private func fetchPhotos(forSearchText text: String) {
+        presenter.fetchPhotos(for: text)
+    }
 }
 
 // MARK: - UICollectionViewDataSource
 extension SearchViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 50
+        return presenter.photos.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCell.reuseIdentifier, for: indexPath) as! PhotoCell
+        
+        let photo = presenter.photos[indexPath.item]
+        cell.set(photo)
         
         return cell
     }
@@ -91,6 +102,30 @@ extension SearchViewController: UICollectionViewDataSource {
 // MARK: - UISearchResultsUpdating
 extension SearchViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
+        guard let searchText = searchController.searchBar.text else { return }
+        guard !searchText.isEmpty else { return }
         
+        // Throttling search calls.
+        pendingWorkItem?.cancel()
+        
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.fetchPhotos(forSearchText: searchText)
+        }
+        pendingWorkItem = workItem
+        // Wait half a second after user stops typing to execute the search request
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: workItem)
+    }
+}
+
+// MARK: - SearchPresenterDelegate
+extension SearchViewController: SearchPresenterDelegate {
+    func didFetchPhotos(_ error: Error?) {
+        if let error = error {
+            print("💥 Error occurred: \(error.localizedDescription)")
+        } else {
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
+        }
     }
 }
