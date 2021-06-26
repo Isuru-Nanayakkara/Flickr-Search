@@ -9,6 +9,13 @@ import UIKit
 
 class SearchViewController: UIViewController {
     
+    lazy private var searchController: UISearchController = {
+        let searchController = UISearchController(searchResultsController: nil)
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = false
+        return searchController
+    }()
     lazy private var collectionView: UICollectionView = {
         let spacing: CGFloat = 2
         let twoColumnLayout = ColumnFlowLayout(cellsPerRow: 2, minimumInteritemSpacing: spacing, minimumLineSpacing: spacing, sectionInset: UIEdgeInsets(top: spacing, left: spacing, bottom: spacing, right: spacing))
@@ -16,6 +23,8 @@ class SearchViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: twoColumnLayout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
+        collectionView.backgroundColor = .systemBackground
+        collectionView.keyboardDismissMode = .onDrag
         collectionView.register(PhotoCell.self, forCellWithReuseIdentifier: PhotoCell.reuseIdentifier)
         return collectionView
     }()
@@ -25,12 +34,20 @@ class SearchViewController: UIViewController {
         
         // UI Setup
         setupView()
+        setupNavigationBar()
         setupCollectionView()
     }
     
     // MARK: - UI Setup
     private func setupView() {
         view.backgroundColor = .systemBackground
+    }
+    
+    private func setupNavigationBar() {
+        navigationItem.title = "Flickr Search"
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        definesPresentationContext = true
     }
     
     private func setupCollectionView() {
@@ -56,6 +73,14 @@ extension SearchViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCell.reuseIdentifier, for: indexPath) as! PhotoCell
         
         return cell
+    }
+    
+}
+
+extension SearchViewController: UISearchResultsUpdating {
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        
     }
     
 }
