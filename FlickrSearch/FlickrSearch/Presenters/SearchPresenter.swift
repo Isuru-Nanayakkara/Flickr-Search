@@ -17,7 +17,7 @@ class SearchPresenter {
     weak private(set) var delegate: SearchPresenterDelegate?
     
     private(set) var photos: [Photo] = []
-    private var page: Int = 1
+    private var page: Int = 0
     private var total: Int = 0
         
     
@@ -26,15 +26,19 @@ class SearchPresenter {
     }
     
     func fetchPhotos(for searchText: String) {
-        let request = FlickrAPI.SearchPhotosEndpoint(searchText: searchText, page: page, resultsPerPage: resultsPerPage).makeRequest()
+        if searchText.isEmpty {
+            clearSearch()
+            return
+        }
         
+        let request = FlickrAPI.SearchPhotosEndpoint(searchText: searchText, page: page + 1, resultsPerPage: resultsPerPage).makeRequest()
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 self.delegate?.didFetchPhotos(error)
             } else if let data = data {
                 do {
                     let response = try JSONDecoder().decode(SearchPhotosResponse.self, from: data)
-                    self.photos = response.photos
+                    self.photos.append(contentsOf: response.photos)
                     self.page = response.page
                     self.total = response.total
                     
@@ -45,5 +49,12 @@ class SearchPresenter {
             }
         }
         .resume()
+    }
+    
+    func clearSearch() {
+        photos.removeAll()
+        page = 0
+        total = 0
+        delegate?.didFetchPhotos(nil)
     }
 }

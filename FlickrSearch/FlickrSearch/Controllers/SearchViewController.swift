@@ -10,8 +10,10 @@ import UIKit
 class SearchViewController: UIViewController {
     lazy private var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
+        searchController.delegate = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.hidesNavigationBarDuringPresentation = false
+        searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = "Search Photos (ex: cats, cars)"
         return searchController
     }()
@@ -21,15 +23,18 @@ class SearchViewController: UIViewController {
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: twoColumnLayout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.dataSource = self
+        collectionView.delegate = self
         collectionView.backgroundColor = .systemBackground
         collectionView.keyboardDismissMode = .onDrag
         collectionView.register(PhotoCell.self, forCellWithReuseIdentifier: PhotoCell.reuseIdentifier)
         return collectionView
     }()
     
+    private enum Section {
+        case main
+    }
     private var presenter: SearchPresenter!
-    private let searchResultsUpdater = SearchResultsUpdater()
+    private var dataSource: UICollectionViewDiffableDataSource<Section, Photo>!
     
     
     init(presenter: SearchPresenter) {
@@ -47,13 +52,14 @@ class SearchViewController: UIViewController {
         super.viewDidLoad()
         
         presenter.setDelegate(self)
-        searchResultsUpdater.delegate = self
-        searchController.searchResultsUpdater = searchResultsUpdater
         
         // UI Setup
         setupView()
         setupNavigationBar()
         setupCollectionView()
+        
+        // Configs
+        configureCollectionViewDataSource()
     }
     
     // MARK: - UI Setup
@@ -79,31 +85,63 @@ class SearchViewController: UIViewController {
     }
     
     // MARK: - API
-    private func fetchPhotos(forSearchText text: String) {
-        presenter.fetchPhotos(for: text)
-    }
-}
-
-// MARK: - UICollectionViewDataSource
-extension SearchViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return presenter.photos.count
+    private func fetchPhotos() {
+        guard let searchText = searchController.searchBar.text else { return }
+        presenter.fetchPhotos(for: searchText)
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCell.reuseIdentifier, for: indexPath) as! PhotoCell
-        
-        let photo = presenter.photos[indexPath.item]
-        cell.set(photo)
-        
-        return cell
+    // MARK: - Data Source
+    private func configureCollectionViewDataSource() {
+        dataSource = UICollectionViewDiffableDataSource<Section, Photo>(collectionView: collectionView, cellProvider: { collectionView, indexPath, photo -> UICollectionViewCell? in
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCell.reuseIdentifier, for: indexPath) as! PhotoCell
+            cell.set(photo)
+            return cell
+        })
+    }
+    
+    private func updateCollectionView() {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Photo>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(presenter.photos)
+        DispatchQueue.main.async {
+            self.dataSource.apply(snapshot, animatingDifferences: true)
+        }
     }
 }
 
-// MARK: - SearchResultsUpdaterDelegate
-extension SearchViewController: SearchResultsUpdaterDelegate {
-    func didFinishTyping(text: String) {
-        fetchPhotos(forSearchText: text)
+// MARK: - UICollectionViewDelegate
+extension SearchViewController: UICollectionViewDelegate {
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        if velocity.y > 0 && presenter.photos.count > 0 {
+            for indexpath in collectionView.indexPathsForVisibleItems {
+                if indexpath == IndexPath(row: presenter.photos.count - 1, section: 0) {
+                    fetchPhotos()
+                }
+            }
+        }
+    }
+}
+
+// MARK: - UISearchBarDelegate
+extension SearchViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        fetchPhotos()
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        // Clear results when the 'Clear' button inside searchbar is tapped
+        guard searchText.isEmpty else { return }
+        presenter.clearSearch()
+    }
+}
+
+// MARK: - UISearchControllerDelegate
+extension SearchViewController: UISearchControllerDelegate {
+    func didDismissSearchController(_ searchController: UISearchController) {
+        // Clear results when 'Cancel' button is tapped
+        guard let searchText = searchController.searchBar.text else { return }
+        guard searchText.isEmpty else { return }
+        presenter.clearSearch()
     }
 }
 
@@ -113,9 +151,7 @@ extension SearchViewController: SearchPresenterDelegate {
         if let error = error {
             print("💥 Error occurred: \(error.localizedDescription)")
         } else {
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-            }
+            updateCollectionView()
         }
     }
 }

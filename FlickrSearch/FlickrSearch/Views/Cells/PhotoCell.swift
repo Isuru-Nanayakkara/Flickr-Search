@@ -37,6 +37,12 @@ class PhotoCell: UICollectionViewCell {
         setupImageView()
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        imageView.image = nil
+    }
+    
     // MARK: - UI Setup
     private func setupImageView() {
         contentView.addSubview(imageView)

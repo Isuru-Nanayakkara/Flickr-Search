@@ -15,3 +15,11 @@ struct Photo {
 }
 
 extension Photo: Decodable { }
+
+extension Photo: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+        hasher.combine(secret)
+        hasher.combine(server)
+    }
+}
