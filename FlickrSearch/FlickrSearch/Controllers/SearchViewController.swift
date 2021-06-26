@@ -8,12 +8,12 @@
 import UIKit
 
 class SearchViewController: UIViewController {
-    
     lazy private var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.hidesNavigationBarDuringPresentation = false
+        searchController.searchBar.placeholder = "Search Photos (ex: cats, cars)"
         return searchController
     }()
     lazy private var collectionView: UICollectionView = {
@@ -28,6 +28,20 @@ class SearchViewController: UIViewController {
         collectionView.register(PhotoCell.self, forCellWithReuseIdentifier: PhotoCell.reuseIdentifier)
         return collectionView
     }()
+    
+    private var viewModel: SearchViewModel!
+    
+    
+    init(viewModel: SearchViewModel) {
+        super.init(nibName: nil, bundle: nil)
+        
+        self.viewModel = viewModel
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,12 +73,10 @@ class SearchViewController: UIViewController {
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
     }
-    
 }
 
 // MARK: - UICollectionViewDataSource
 extension SearchViewController: UICollectionViewDataSource {
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 50
     }
@@ -74,13 +86,11 @@ extension SearchViewController: UICollectionViewDataSource {
         
         return cell
     }
-    
 }
 
+// MARK: - UISearchResultsUpdating
 extension SearchViewController: UISearchResultsUpdating {
-    
     func updateSearchResults(for searchController: UISearchController) {
         
     }
-    
 }

@@ -8,7 +8,6 @@
 import UIKit
 
 class PhotoCell: UICollectionViewCell {
-    
     lazy private var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -35,6 +34,18 @@ class PhotoCell: UICollectionViewCell {
     
     private func commonInit() {
         contentView.backgroundColor = .systemGreen
+        
+        setupImageView()
     }
     
+    // MARK: - UI Setup
+    private func setupImageView() {
+        contentView.addSubview(imageView)
+        NSLayoutConstraint.activate([
+            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+        ])
+    }
 }
