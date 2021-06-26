@@ -22,6 +22,7 @@
 		43FFEBE92687388700496BA2 /* SearchPhotosResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FFEBE82687388700496BA2 /* SearchPhotosResponse.swift */; };
 		43FFEBEC26873F4F00496BA2 /* SearchPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FFEBEB26873F4F00496BA2 /* SearchPresenter.swift */; };
 		43FFEBEE2687487900496BA2 /* AsyncImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FFEBED2687487900496BA2 /* AsyncImageView.swift */; };
+		43FFEBF026875CA800496BA2 /* SearchResultsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FFEBEF26875CA800496BA2 /* SearchResultsUpdater.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +64,7 @@
 		43FFEBE82687388700496BA2 /* SearchPhotosResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPhotosResponse.swift; sourceTree = "<group>"; };
 		43FFEBEB26873F4F00496BA2 /* SearchPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPresenter.swift; sourceTree = "<group>"; };
 		43FFEBED2687487900496BA2 /* AsyncImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncImageView.swift; sourceTree = "<group>"; };
+		43FFEBEF26875CA800496BA2 /* SearchResultsUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsUpdater.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +117,7 @@
 			children = (
 				43FFEB942686E26A00496BA2 /* AppDelegate.swift */,
 				43FFEB962686E26A00496BA2 /* SceneDelegate.swift */,
+				43FFEBEF26875CA800496BA2 /* SearchResultsUpdater.swift */,
 				43FFEBC52686F04600496BA2 /* Controllers */,
 				43FFEBEA26873F4100496BA2 /* Presenters */,
 				43FFEBC42686F04000496BA2 /* Views */,
@@ -344,6 +347,7 @@
 				43FFEBD12686FC2F00496BA2 /* ColumnFlowLayout.swift in Sources */,
 				43FFEB952686E26A00496BA2 /* AppDelegate.swift in Sources */,
 				43FFEBC92686F07A00496BA2 /* SearchViewController.swift in Sources */,
+				43FFEBF026875CA800496BA2 /* SearchResultsUpdater.swift in Sources */,
 				43FFEB972686E26A00496BA2 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

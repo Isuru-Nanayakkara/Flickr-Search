@@ -10,7 +10,6 @@ import UIKit
 class SearchViewController: UIViewController {
     lazy private var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
-        searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.placeholder = "Search Photos (ex: cats, cars)"
@@ -30,7 +29,7 @@ class SearchViewController: UIViewController {
     }()
     
     private var presenter: SearchPresenter!
-    private var pendingWorkItem: DispatchWorkItem?
+    private let searchResultsUpdater = SearchResultsUpdater()
     
     
     init(presenter: SearchPresenter) {
@@ -48,6 +47,8 @@ class SearchViewController: UIViewController {
         super.viewDidLoad()
         
         presenter.setDelegate(self)
+        searchResultsUpdater.delegate = self
+        searchController.searchResultsUpdater = searchResultsUpdater
         
         // UI Setup
         setupView()
@@ -99,21 +100,10 @@ extension SearchViewController: UICollectionViewDataSource {
     }
 }
 
-// MARK: - UISearchResultsUpdating
-extension SearchViewController: UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
-        guard let searchText = searchController.searchBar.text else { return }
-        guard !searchText.isEmpty else { return }
-        
-        // Throttling search calls.
-        pendingWorkItem?.cancel()
-        
-        let workItem = DispatchWorkItem { [weak self] in
-            self?.fetchPhotos(forSearchText: searchText)
-        }
-        pendingWorkItem = workItem
-        // Wait half a second after user stops typing to execute the search request
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: workItem)
+// MARK: - SearchResultsUpdaterDelegate
+extension SearchViewController: SearchResultsUpdaterDelegate {
+    func didFinishTyping(text: String) {
+        fetchPhotos(forSearchText: text)
     }
 }
 
