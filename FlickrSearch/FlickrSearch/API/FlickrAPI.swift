@@ -31,6 +31,7 @@ struct FlickrAPI {
                 URLQueryItem(name: "text", value: searchText),
                 URLQueryItem(name: "page", value: String(page)),
                 URLQueryItem(name: "per_page", value: String(resultsPerPage)),
+                URLQueryItem(name: "sort", value: "relevance"),
             ]
             
             return URLRequest(url: components.url!)

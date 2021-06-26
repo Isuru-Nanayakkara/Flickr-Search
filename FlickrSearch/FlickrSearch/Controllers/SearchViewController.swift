@@ -26,6 +26,7 @@ class SearchViewController: UIViewController {
         collectionView.delegate = self
         collectionView.backgroundColor = .systemBackground
         collectionView.keyboardDismissMode = .onDrag
+        collectionView.backgroundView = EmptyView(message: "Nothing to Show 🍃")
         collectionView.register(PhotoCell.self, forCellWithReuseIdentifier: PhotoCell.reuseIdentifier)
         return collectionView
     }()
@@ -149,8 +150,13 @@ extension SearchViewController: UISearchControllerDelegate {
 extension SearchViewController: SearchPresenterDelegate {
     func didFetchPhotos(_ error: Error?) {
         if let error = error {
-            print("💥 Error occurred: \(error.localizedDescription)")
+            DispatchQueue.main.async {
+                self.collectionView.backgroundView = EmptyView(message: error.localizedDescription)
+            }
         } else {
+            DispatchQueue.main.async {
+                self.collectionView.backgroundView = nil
+            }
             updateCollectionView()
         }
     }

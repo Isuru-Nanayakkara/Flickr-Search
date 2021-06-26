@@ -22,6 +22,7 @@
 		43FFEBE92687388700496BA2 /* SearchPhotosResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FFEBE82687388700496BA2 /* SearchPhotosResponse.swift */; };
 		43FFEBEC26873F4F00496BA2 /* SearchPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FFEBEB26873F4F00496BA2 /* SearchPresenter.swift */; };
 		43FFEBEE2687487900496BA2 /* AsyncImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FFEBED2687487900496BA2 /* AsyncImageView.swift */; };
+		43FFEBF22687910600496BA2 /* EmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FFEBF12687910600496BA2 /* EmptyView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +64,7 @@
 		43FFEBE82687388700496BA2 /* SearchPhotosResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPhotosResponse.swift; sourceTree = "<group>"; };
 		43FFEBEB26873F4F00496BA2 /* SearchPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPresenter.swift; sourceTree = "<group>"; };
 		43FFEBED2687487900496BA2 /* AsyncImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncImageView.swift; sourceTree = "<group>"; };
+		43FFEBF12687910600496BA2 /* EmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +153,7 @@
 				43FFEBCA2686F0C700496BA2 /* Cells */,
 				43FFEBCD2686F72500496BA2 /* Layouts */,
 				43FFEBED2687487900496BA2 /* AsyncImageView.swift */,
+				43FFEBF12687910600496BA2 /* EmptyView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -338,6 +341,7 @@
 				43FFEBD426870A2A00496BA2 /* Photo.swift in Sources */,
 				43FFEBDB2687109D00496BA2 /* FlickrAPI.swift in Sources */,
 				43FFEBCC2686F0DA00496BA2 /* PhotoCell.swift in Sources */,
+				43FFEBF22687910600496BA2 /* EmptyView.swift in Sources */,
 				43FFEBE12687216100496BA2 /* FlickrPhotoURLBuilder.swift in Sources */,
 				43FFEBEE2687487900496BA2 /* AsyncImageView.swift in Sources */,
 				43FFEBE92687388700496BA2 /* SearchPhotosResponse.swift in Sources */,
