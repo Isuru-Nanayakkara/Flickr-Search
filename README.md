@@ -1,1 +1,1 @@
-# Flickr-Search
+# Flickr Search (KeenEye iOS Assignment)
