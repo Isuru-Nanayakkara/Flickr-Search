@@ -19,18 +19,13 @@ class SearchPresenter {
     private(set) var photos: [Photo] = []
     private var page: Int = 0
     private var total: Int = 0
-        
+    
     
     func setDelegate(_ delegate: SearchPresenterDelegate) {
         self.delegate = delegate
     }
     
     func fetchPhotos(for searchText: String) {
-        if searchText.isEmpty {
-            clearSearch()
-            return
-        }
-        
         let request = FlickrAPI.SearchPhotosEndpoint(searchText: searchText, page: page + 1, resultsPerPage: resultsPerPage).makeRequest()
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
