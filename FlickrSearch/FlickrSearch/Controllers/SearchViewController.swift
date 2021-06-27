@@ -82,6 +82,8 @@ class SearchViewController: UIViewController {
         
         // Configs
         configureCollectionViewDataSource()
+        
+        state = .emptyResults
     }
     
     private func updateView() {

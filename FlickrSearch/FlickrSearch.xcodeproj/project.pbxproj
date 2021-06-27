@@ -45,7 +45,7 @@
 
 /* Begin PBXFileReference section */
 		43B949342688524F005120FE /* SearchHistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchHistoryStore.swift; sourceTree = "<group>"; };
-		43FFEB912686E26A00496BA2 /* FlickrSearch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlickrSearch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		43FFEB912686E26A00496BA2 /* Flickr Search.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Flickr Search.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43FFEB942686E26A00496BA2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		43FFEB962686E26A00496BA2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		43FFEB9D2686E26B00496BA2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -115,7 +115,7 @@
 		43FFEB922686E26A00496BA2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				43FFEB912686E26A00496BA2 /* FlickrSearch.app */,
+				43FFEB912686E26A00496BA2 /* Flickr Search.app */,
 				43FFEBA72686E26B00496BA2 /* FlickrSearchTests.xctest */,
 				43FFEBB22686E26B00496BA2 /* FlickrSearchUITests.xctest */,
 			);
@@ -236,7 +236,7 @@
 			);
 			name = FlickrSearch;
 			productName = FlickrSearch;
-			productReference = 43FFEB912686E26A00496BA2 /* FlickrSearch.app */;
+			productReference = 43FFEB912686E26A00496BA2 /* Flickr Search.app */;
 			productType = "com.apple.product-type.application";
 		};
 		43FFEBA62686E26B00496BA2 /* FlickrSearchTests */ = {
@@ -537,7 +537,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.isuru.FlickrSearch;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Flickr Search";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -557,7 +557,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.isuru.FlickrSearch;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Flickr Search";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
