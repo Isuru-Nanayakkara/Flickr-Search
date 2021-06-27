@@ -9,17 +9,27 @@ import Foundation
 
 protocol SearchPresenterDelegate: AnyObject {
     func didFetchPhotos(_ error: Error?)
+    func didClearSearch()
 }
 
 class SearchPresenter {
     private let resultsPerPage = 10
     
     weak private(set) var delegate: SearchPresenterDelegate?
+    var pastSearches: [String] {
+        return searchHistoryStore.getSearches()
+    }
     
     private(set) var photos: [Photo] = []
+    
     private var page: Int = 0
     private var total: Int = 0
+    private var searchHistoryStore: SearchHistoryStore!
     
+    
+    init(searchHistoryStore: SearchHistoryStore) {
+        self.searchHistoryStore = searchHistoryStore
+    }
     
     func setDelegate(_ delegate: SearchPresenterDelegate) {
         self.delegate = delegate
@@ -50,6 +60,10 @@ class SearchPresenter {
         photos.removeAll()
         page = 0
         total = 0
-        delegate?.didFetchPhotos(nil)
+        delegate?.didClearSearch()
+    }
+    
+    func saveSearch(_ text: String) {
+        searchHistoryStore.saveSearch(text)
     }
 }

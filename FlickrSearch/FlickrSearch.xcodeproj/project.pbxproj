@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		43B949352688524F005120FE /* SearchHistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B949342688524F005120FE /* SearchHistoryStore.swift */; };
 		43FFEB952686E26A00496BA2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FFEB942686E26A00496BA2 /* AppDelegate.swift */; };
 		43FFEB972686E26A00496BA2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FFEB962686E26A00496BA2 /* SceneDelegate.swift */; };
 		43FFEB9E2686E26B00496BA2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43FFEB9D2686E26B00496BA2 /* Assets.xcassets */; };
@@ -43,6 +44,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		43B949342688524F005120FE /* SearchHistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchHistoryStore.swift; sourceTree = "<group>"; };
 		43FFEB912686E26A00496BA2 /* FlickrSearch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlickrSearch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		43FFEB942686E26A00496BA2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		43FFEB962686E26A00496BA2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -92,6 +94,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		43B9493126885038005120FE /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				43B949342688524F005120FE /* SearchHistoryStore.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		43FFEB882686E26A00496BA2 = {
 			isa = PBXGroup;
 			children = (
@@ -122,6 +132,7 @@
 				43FFEBC42686F04000496BA2 /* Views */,
 				43FFEBC72686F05700496BA2 /* Models */,
 				43FFEBD226870A1400496BA2 /* API */,
+				43B9493126885038005120FE /* Services */,
 				43FFEB9D2686E26B00496BA2 /* Assets.xcassets */,
 				43FFEB9F2686E26B00496BA2 /* LaunchScreen.storyboard */,
 				43FFEBA22686E26B00496BA2 /* Info.plist */,
@@ -343,6 +354,7 @@
 				43FFEBCC2686F0DA00496BA2 /* PhotoCell.swift in Sources */,
 				43FFEBF22687910600496BA2 /* EmptyView.swift in Sources */,
 				43FFEBE12687216100496BA2 /* FlickrPhotoURLBuilder.swift in Sources */,
+				43B949352688524F005120FE /* SearchHistoryStore.swift in Sources */,
 				43FFEBEE2687487900496BA2 /* AsyncImageView.swift in Sources */,
 				43FFEBE92687388700496BA2 /* SearchPhotosResponse.swift in Sources */,
 				43FFEBD12686FC2F00496BA2 /* ColumnFlowLayout.swift in Sources */,

@@ -26,16 +26,36 @@ class SearchViewController: UIViewController {
         collectionView.delegate = self
         collectionView.backgroundColor = .systemBackground
         collectionView.keyboardDismissMode = .onDrag
-        collectionView.backgroundView = EmptyView(message: "Nothing to Show 🍃")
+        collectionView.isHidden = false
         collectionView.register(PhotoCell.self, forCellWithReuseIdentifier: PhotoCell.reuseIdentifier)
         return collectionView
     }()
+    lazy private var tableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .plain)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.isHidden = true
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "SearchTermCell")
+        return tableView
+    }()
     
-    private enum Section {
-        case main
+    private enum ViewState {
+        case emptyResults
+        case error(message: String)
+        case populated
+        case searchFocused
     }
+    
     private var presenter: SearchPresenter!
-    private var dataSource: UICollectionViewDiffableDataSource<Section, Photo>!
+    private var dataSource: UICollectionViewDiffableDataSource<Int, Photo>!
+    private var state: ViewState = .emptyResults {
+        didSet {
+            DispatchQueue.main.async {
+                self.updateView()
+            }
+        }
+    }
     
     
     init(presenter: SearchPresenter) {
@@ -58,9 +78,31 @@ class SearchViewController: UIViewController {
         setupView()
         setupNavigationBar()
         setupCollectionView()
+        setupTableView()
         
         // Configs
         configureCollectionViewDataSource()
+    }
+    
+    private func updateView() {
+        switch state {
+        case .emptyResults:
+            tableView.isHidden = true
+            collectionView.isHidden = false
+            collectionView.backgroundView = EmptyView(message: "Nothing to Show 🍃")
+        case .error(let message):
+            tableView.isHidden = true
+            collectionView.isHidden = false
+            collectionView.backgroundView = EmptyView(message: message)
+        case .populated:
+            tableView.isHidden = true
+            collectionView.isHidden = false
+            updateCollectionView()
+        case .searchFocused:
+            tableView.isHidden = false
+            collectionView.isHidden = true
+            tableView.reloadData()
+        }
     }
     
     // MARK: - UI Setup
@@ -85,6 +127,16 @@ class SearchViewController: UIViewController {
         ])
     }
     
+    private func setupTableView() {
+        view.addSubview(tableView)
+        NSLayoutConstraint.activate([
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+        ])
+    }
+    
     // MARK: - API
     private func fetchPhotos() {
         guard let searchText = searchController.searchBar.text else { return }
@@ -93,16 +145,16 @@ class SearchViewController: UIViewController {
     
     // MARK: - Data Source
     private func configureCollectionViewDataSource() {
-        dataSource = UICollectionViewDiffableDataSource<Section, Photo>(collectionView: collectionView, cellProvider: { collectionView, indexPath, photo -> UICollectionViewCell? in
+        dataSource = UICollectionViewDiffableDataSource<Int, Photo>(collectionView: collectionView) { collectionView, indexPath, photo in
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCell.reuseIdentifier, for: indexPath) as! PhotoCell
             cell.set(photo)
             return cell
-        })
+        }
     }
     
     private func updateCollectionView() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, Photo>()
-        snapshot.appendSections([.main])
+        var snapshot = NSDiffableDataSourceSnapshot<Int, Photo>()
+        snapshot.appendSections([0])
         snapshot.appendItems(presenter.photos)
         DispatchQueue.main.async {
             self.dataSource.apply(snapshot, animatingDifferences: true)
@@ -123,16 +175,45 @@ extension SearchViewController: UICollectionViewDelegate {
     }
 }
 
+// MARK: - UITableViewDataSource
+extension SearchViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return presenter.pastSearches.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SearchTermCell", for: indexPath)
+        cell.textLabel?.text = presenter.pastSearches[indexPath.row]
+        return cell
+    }
+}
+
+// MARK: - UITableViewDelegate
+extension SearchViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let search = presenter.pastSearches[indexPath.row]
+        searchController.searchBar.text = search
+        fetchPhotos()
+    }
+}
+
 // MARK: - UISearchBarDelegate
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         fetchPhotos()
+        guard let searchText = searchController.searchBar.text else { return }
+        presenter.saveSearch(searchText)
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         // Clear results when the 'Clear' button inside searchbar is tapped
         guard searchText.isEmpty else { return }
         presenter.clearSearch()
+    }
+    
+    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+        state = .searchFocused
+        return true
     }
 }
 
@@ -143,6 +224,8 @@ extension SearchViewController: UISearchControllerDelegate {
         guard let searchText = searchController.searchBar.text else { return }
         guard searchText.isEmpty else { return }
         presenter.clearSearch()
+        updateCollectionView()
+        state = .emptyResults
     }
 }
 
@@ -150,14 +233,13 @@ extension SearchViewController: UISearchControllerDelegate {
 extension SearchViewController: SearchPresenterDelegate {
     func didFetchPhotos(_ error: Error?) {
         if let error = error {
-            DispatchQueue.main.async {
-                self.collectionView.backgroundView = EmptyView(message: error.localizedDescription)
-            }
+            state = .error(message: error.localizedDescription)
         } else {
-            DispatchQueue.main.async {
-                self.collectionView.backgroundView = nil
-            }
-            updateCollectionView()
+            state = .populated
         }
+    }
+    
+    func didClearSearch() {
+        state = .searchFocused
     }
 }
