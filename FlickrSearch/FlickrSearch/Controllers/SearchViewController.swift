@@ -99,6 +99,7 @@ class SearchViewController: UIViewController {
         case .populated:
             tableView.isHidden = true
             collectionView.isHidden = false
+            collectionView.backgroundView = nil
             updateCollectionView()
         case .searchFocused:
             tableView.isHidden = false
@@ -142,7 +143,13 @@ class SearchViewController: UIViewController {
     // MARK: - API
     private func fetchPhotos() {
         guard let searchText = searchController.searchBar.text else { return }
-        presenter.fetchPhotos(for: searchText)
+        presenter.fetchPhotos(for: searchText) { error in
+            if let error = error {
+                self.state = .error(message: error.localizedDescription)
+            } else {
+                self.state = .populated
+            }
+        }
     }
     
     // MARK: - Data Source

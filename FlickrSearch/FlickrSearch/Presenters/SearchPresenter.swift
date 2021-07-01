@@ -12,7 +12,13 @@ protocol SearchPresenterDelegate: AnyObject {
     func didClearSearch()
 }
 
-class SearchPresenter {
+protocol SearchPresenterProvider {
+    var photos: [Photo] { get }
+    
+    func fetchPhotos(for searchText: String, onCompletion: @escaping (_ error: Error?) -> ())
+}
+
+class SearchPresenter: SearchPresenterProvider {
     private let resultsPerPage = 10
     
     weak private(set) var delegate: SearchPresenterDelegate?
@@ -24,10 +30,13 @@ class SearchPresenter {
     
     private var page: Int = 0
     private var total: Int = 0
-    private var searchHistoryStore: SearchHistoryStore!
+    
+    private var api: FlickrAPIProvider
+    private var searchHistoryStore: SearchHistoryStore
     
     
-    init(searchHistoryStore: SearchHistoryStore) {
+    init(api: FlickrAPIProvider, searchHistoryStore: SearchHistoryStore) {
+        self.api = api
         self.searchHistoryStore = searchHistoryStore
     }
     
@@ -35,25 +44,18 @@ class SearchPresenter {
         self.delegate = delegate
     }
     
-    func fetchPhotos(for searchText: String) {
-        let request = FlickrAPI.SearchPhotosEndpoint(searchText: searchText, page: page + 1, resultsPerPage: resultsPerPage).makeRequest()
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                self.delegate?.didFetchPhotos(error)
-            } else if let data = data {
-                do {
-                    let response = try JSONDecoder().decode(SearchPhotosResponse.self, from: data)
-                    self.photos.append(contentsOf: response.photos)
-                    self.page = response.page
-                    self.total = response.total
-                    
-                    self.delegate?.didFetchPhotos(nil)
-                } catch {
-                    self.delegate?.didFetchPhotos(error)
-                }
+    func fetchPhotos(for searchText: String, onCompletion: @escaping (_ error: Error?) -> ()) {
+        api.fetchPhotos(for: searchText, page: page + 1, resultsPerPage: resultsPerPage) { result in
+            switch result {
+            case .success(let response):
+                self.photos.append(contentsOf: response.photos)
+                self.page = response.page
+                self.total = response.total
+                onCompletion(nil)
+            case .failure(let error):
+                onCompletion(error)
             }
         }
-        .resume()
     }
     
     func clearSearch() {

@@ -7,8 +7,31 @@
 
 import Foundation
 
-struct FlickrAPI {
-    struct SearchPhotosEndpoint {
+protocol FlickrAPIProvider {
+    func fetchPhotos(for searchText: String, page: Int, resultsPerPage: Int, onCompletion: @escaping (Result<SearchPhotosResponse, Error>) -> ())
+}
+
+class FlickrAPI: FlickrAPIProvider {
+    func fetchPhotos(for searchText: String, page: Int, resultsPerPage: Int, onCompletion: @escaping (Result<SearchPhotosResponse, Error>) -> ()) {
+        let request = FlickrAPI.SearchPhotosEndpoint(searchText: searchText, page: page, resultsPerPage: resultsPerPage).makeRequest()
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                onCompletion(.failure(error))
+            } else if let data = data {
+                do {
+                    let response = try JSONDecoder().decode(SearchPhotosResponse.self, from: data)
+                    onCompletion(.success(response))
+                } catch {
+                    onCompletion(.failure(error))
+                }
+            }
+        }
+        .resume()
+    }
+}
+
+private extension FlickrAPI {
+    private struct SearchPhotosEndpoint {
         let method = "flickr.photos.search"
         let format = "json"
         let apiKey = "873aa7a6882640372aa70014d983d242"
