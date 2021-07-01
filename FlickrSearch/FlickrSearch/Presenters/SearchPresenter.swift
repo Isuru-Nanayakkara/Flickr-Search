@@ -53,6 +53,8 @@ class SearchPresenter: SearchPresenterProvider {
                 self.photos.append(contentsOf: response.photos)
                 self.page = response.page
                 self.total = response.total
+                
+                self.store.saveSearch(searchText)
                 onCompletion(nil)
             case .failure(let error):
                 onCompletion(error)
@@ -66,8 +68,10 @@ class SearchPresenter: SearchPresenterProvider {
         total = 0
         delegate?.didClearSearch()
     }
-    
-    func saveSearch(_ text: String) {
+}
+
+private extension SearchPresenter {
+    private func saveSearch(_ text: String) {
         store.saveSearch(text)
     }
 }

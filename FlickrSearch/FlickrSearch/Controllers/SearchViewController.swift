@@ -210,8 +210,6 @@ extension SearchViewController: UITableViewDelegate {
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         fetchPhotos()
-        guard let searchText = searchController.searchBar.text else { return }
-        presenter.saveSearch(searchText)
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
