@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol FlickrAPIProvider {
+protocol FlickrAPIProvider: AnyObject {
     func fetchPhotos(for searchText: String, page: Int, resultsPerPage: Int, onCompletion: @escaping (Result<SearchPhotosResponse, Error>) -> ())
 }
 

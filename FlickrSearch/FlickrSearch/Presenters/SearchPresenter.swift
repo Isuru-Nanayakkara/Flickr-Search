@@ -7,12 +7,7 @@
 
 import Foundation
 
-protocol SearchPresenterDelegate: AnyObject {
-    func didFetchPhotos(_ error: Error?)
-    func didClearSearch()
-}
-
-protocol SearchPresenterProvider {
+protocol SearchPresenterProvider: AnyObject {
     var photos: [Photo] { get }
     var searches: [String] { get }
     
@@ -21,12 +16,11 @@ protocol SearchPresenterProvider {
 
 class SearchPresenter: SearchPresenterProvider {
     // Public
-    weak private(set) var delegate: SearchPresenterDelegate?
-    
     var searches: [String] {
         return store.getSearches()
     }
     private(set) var photos: [Photo] = []
+    var onSearchCleared: (() -> Void)?
     
     // Private
     private let resultsPerPage = 10
@@ -40,10 +34,6 @@ class SearchPresenter: SearchPresenterProvider {
     init(api: FlickrAPIProvider, store: SearchHistoryStoreProvider) {
         self.api = api
         self.store = store
-    }
-    
-    func setDelegate(_ delegate: SearchPresenterDelegate) {
-        self.delegate = delegate
     }
     
     func fetchPhotos(for searchText: String, onCompletion: @escaping (_ error: Error?) -> ()) {
@@ -66,7 +56,7 @@ class SearchPresenter: SearchPresenterProvider {
         photos.removeAll()
         page = 0
         total = 0
-        delegate?.didClearSearch()
+        onSearchCleared?()
     }
 }
 

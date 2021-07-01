@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol SearchHistoryStoreProvider {
+protocol SearchHistoryStoreProvider: AnyObject {
     func saveSearch(_ text: String)
     func getSearches() -> [String]
 }

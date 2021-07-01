@@ -72,8 +72,6 @@ class SearchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        presenter.setDelegate(self)
-        
         // UI Setup
         setupView()
         setupNavigationBar()
@@ -84,6 +82,10 @@ class SearchViewController: UIViewController {
         configureCollectionViewDataSource()
         
         state = .emptyResults
+        presenter.onSearchCleared = { [weak self] in
+            self?.updateCollectionView()
+            self?.state = .searchFocused
+        }
     }
     
     private func updateView() {
@@ -228,25 +230,7 @@ extension SearchViewController: UISearchBarDelegate {
 extension SearchViewController: UISearchControllerDelegate {
     func didDismissSearchController(_ searchController: UISearchController) {
         // Clear results when 'Cancel' button is tapped
-        guard let searchText = searchController.searchBar.text else { return }
-        guard searchText.isEmpty else { return }
         presenter.clearSearch()
-        updateCollectionView()
         state = .emptyResults
-    }
-}
-
-// MARK: - SearchPresenterDelegate
-extension SearchViewController: SearchPresenterDelegate {
-    func didFetchPhotos(_ error: Error?) {
-        if let error = error {
-            state = .error(message: error.localizedDescription)
-        } else {
-            state = .populated
-        }
-    }
-    
-    func didClearSearch() {
-        state = .searchFocused
     }
 }
