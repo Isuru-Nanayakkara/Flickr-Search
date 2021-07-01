@@ -23,7 +23,7 @@ class SearchPresenter: SearchPresenterProvider {
     var onSearchCleared: (() -> Void)?
     
     // Private
-    private let resultsPerPage = 10
+    private let resultsPerPage = 20
     private var page: Int = 0
     private var total: Int = 0
     

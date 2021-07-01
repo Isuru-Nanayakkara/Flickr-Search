@@ -1,14 +1,14 @@
 //
-//  FlickrSearchTests.swift
+//  FlickrSearchAPITests.swift
 //  FlickrSearchTests
 //
-//  Created by Isuru Nanayakkara on 2021-06-26.
+//  Created by Isuru Nanayakkara on 2021-07-01.
 //
 
 import XCTest
 @testable import Flickr_Search
 
-class FlickrSearchTests: XCTestCase {
+class FlickrSearchAPITests: XCTestCase {
     private var sut: URLSession!
     
     override func setUpWithError() throws {
