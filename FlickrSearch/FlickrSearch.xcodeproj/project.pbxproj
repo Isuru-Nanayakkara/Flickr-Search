@@ -94,12 +94,12 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		43B9493126885038005120FE /* Services */ = {
+		43F16488268DD14C00B47AAF /* Store */ = {
 			isa = PBXGroup;
 			children = (
 				43B949342688524F005120FE /* SearchHistoryStore.swift */,
 			);
-			path = Services;
+			path = Store;
 			sourceTree = "<group>";
 		};
 		43FFEB882686E26A00496BA2 = {
@@ -132,7 +132,7 @@
 				43FFEBC42686F04000496BA2 /* Views */,
 				43FFEBC72686F05700496BA2 /* Models */,
 				43FFEBD226870A1400496BA2 /* API */,
-				43B9493126885038005120FE /* Services */,
+				43F16488268DD14C00B47AAF /* Store */,
 				43FFEB9D2686E26B00496BA2 /* Assets.xcassets */,
 				43FFEB9F2686E26B00496BA2 /* LaunchScreen.storyboard */,
 				43FFEBA22686E26B00496BA2 /* Info.plist */,

@@ -7,7 +7,12 @@
 
 import Foundation
 
-struct SearchHistoryStore {
+protocol SearchHistoryStoreProvider {
+    func saveSearch(_ text: String)
+    func getSearches() -> [String]
+}
+
+class SearchHistoryStore: SearchHistoryStoreProvider {
     private let Key = "Searches"
     
     func saveSearch(_ text: String) {

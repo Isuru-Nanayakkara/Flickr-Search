@@ -187,12 +187,12 @@ extension SearchViewController: UICollectionViewDelegate {
 // MARK: - UITableViewDataSource
 extension SearchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return presenter.pastSearches.count
+        return presenter.searches.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SearchTermCell", for: indexPath)
-        cell.textLabel?.text = presenter.pastSearches[indexPath.row]
+        cell.textLabel?.text = presenter.searches[indexPath.row]
         return cell
     }
 }
@@ -200,7 +200,7 @@ extension SearchViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension SearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let search = presenter.pastSearches[indexPath.row]
+        let search = presenter.searches[indexPath.row]
         searchController.searchBar.text = search
         fetchPhotos()
     }

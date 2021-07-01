@@ -54,7 +54,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 private extension SceneDelegate {
     func makeSearchViewController() -> UIViewController {
-        let presenter = SearchPresenter(api: FlickrAPI(), searchHistoryStore: SearchHistoryStore())
+        let presenter = SearchPresenter(api: FlickrAPI(), store: SearchHistoryStore())
         return SearchViewController(presenter: presenter)
     }
 }

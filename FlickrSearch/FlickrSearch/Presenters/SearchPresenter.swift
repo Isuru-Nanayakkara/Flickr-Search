@@ -14,30 +14,32 @@ protocol SearchPresenterDelegate: AnyObject {
 
 protocol SearchPresenterProvider {
     var photos: [Photo] { get }
+    var searches: [String] { get }
     
     func fetchPhotos(for searchText: String, onCompletion: @escaping (_ error: Error?) -> ())
 }
 
 class SearchPresenter: SearchPresenterProvider {
-    private let resultsPerPage = 10
-    
+    // Public
     weak private(set) var delegate: SearchPresenterDelegate?
-    var pastSearches: [String] {
-        return searchHistoryStore.getSearches()
-    }
     
+    var searches: [String] {
+        return store.getSearches()
+    }
     private(set) var photos: [Photo] = []
     
+    // Private
+    private let resultsPerPage = 10
     private var page: Int = 0
     private var total: Int = 0
     
     private var api: FlickrAPIProvider
-    private var searchHistoryStore: SearchHistoryStore
+    private var store: SearchHistoryStoreProvider
     
     
-    init(api: FlickrAPIProvider, searchHistoryStore: SearchHistoryStore) {
+    init(api: FlickrAPIProvider, store: SearchHistoryStoreProvider) {
         self.api = api
-        self.searchHistoryStore = searchHistoryStore
+        self.store = store
     }
     
     func setDelegate(_ delegate: SearchPresenterDelegate) {
@@ -66,6 +68,6 @@ class SearchPresenter: SearchPresenterProvider {
     }
     
     func saveSearch(_ text: String) {
-        searchHistoryStore.saveSearch(text)
+        store.saveSearch(text)
     }
 }
