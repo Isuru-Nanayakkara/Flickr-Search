@@ -17,9 +17,12 @@ class SearchHistoryStore: SearchHistoryStoreProvider {
     
     func saveSearch(_ text: String) {
         var existingSearches = getSearches()
-        existingSearches.insert(text, at: 0)
-        
-        UserDefaults.standard.setValue(existingSearches, forKey: Key)
+        if !existingSearches.contains(text) {
+            // Only save unique records
+            existingSearches.insert(text, at: 0)
+            
+            UserDefaults.standard.setValue(existingSearches, forKey: Key)
+        }
     }
     
     func getSearches() -> [String] {
