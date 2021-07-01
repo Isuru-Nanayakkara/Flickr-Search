@@ -30,8 +30,8 @@ class FlickrAPI: FlickrAPIProvider {
     }
 }
 
-private extension FlickrAPI {
-    private struct SearchPhotosEndpoint {
+extension FlickrAPI {
+    struct SearchPhotosEndpoint {
         let method = "flickr.photos.search"
         let format = "json"
         let apiKey = "873aa7a6882640372aa70014d983d242"

@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import FlickrSearch
+@testable import Flickr_Search
 
 class FlickrSearchTests: XCTestCase {
     private var sut: URLSession!
