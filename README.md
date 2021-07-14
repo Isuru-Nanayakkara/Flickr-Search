@@ -1,4 +1,4 @@
-# Flickr Search (KeenEye iOS Assignment)
+# Flickr Search
 
 * 100% written in Swift.
 * Programatic UI.
